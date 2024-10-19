@@ -5,7 +5,7 @@ const wss = new WebSocket.Server({ port: 8080 });
 const clients = new Map(); // Store connected clients
 
 wss.on('connection', (ws, req) => {
-  const clientIp = req.socket.remoteAddress;
+  const clientIp = Math.random().toString(36).substring(7); 
 
   ws.on('message', async (message) => {
     const data = JSON.parse(message);
