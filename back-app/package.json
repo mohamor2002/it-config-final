@@ -1,0 +1,19 @@
+{
+  "name": "network-system",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm-run-all --parallel start:isp start:router start:rest-api start:client",
+    "start:db": "cd db && node initDb.js",
+    "start:seed": "cd db && node seed.js",
+    "start:isp": "cd isp-server && npm start",
+    "start:router": "cd router && npm start",
+    "start:client": "cd client && npm start",
+    "start:rest-api": "cd rest-api && npm start"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

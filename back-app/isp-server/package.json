@@ -1,0 +1,13 @@
+{
+    "name": "isp-server",
+    "version": "1.0.0",
+    "main": "src/server.js",
+    "scripts": {
+        "start": "node src/server.js"
+    },
+    "dependencies": {
+        "node-cron": "^3.0.3",
+        "sqlite3": "^5.0.2",
+        "ws": "^8.0.0"
+    }
+}

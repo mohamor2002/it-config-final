@@ -1,0 +1,15 @@
+# Use the lightweight Alpine image
+FROM alpine:latest
+
+# Install SQLite
+RUN apk add --no-cache sqlite sqlite-dev
+
+# Create a directory for the database
+RUN mkdir /data
+
+
+COPY initDb.js /initDb.js
+
+WORKDIR /data
+
+CMD ["node", "/initDb.js"]
