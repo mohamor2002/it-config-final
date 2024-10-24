@@ -1,6 +1,18 @@
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./network.db'); // Centralized path for initialization
+const path = require('path');
 
+// Set the database path based on the environment
+const dbPath = process.env.NODE_ENV === 'docker' ? '/usr/src/app/db/network.db' : './network.db'; // Use volume path in Docker
+
+console.log(`Database path: ${dbPath}`);
+
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Error opening database:', err.message);
+  } else {
+    console.log('Connected to the SQLite database.');
+  }
+});
 // Create the necessary tables
 db.serialize(() => {
   // Create users table (without port and with name)

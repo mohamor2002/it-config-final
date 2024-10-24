@@ -1,12 +1,16 @@
 const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
 
 // Check if running in Docker or development environment
 const dbPath = process.env.NODE_ENV === 'docker'
-  ? '/app/db/network.db' // Path inside Docker container
+  ? '/usr/src/app/db/network.db' // Path inside Docker container
   : '../db/network.db'// Local dev path
-  const db = new sqlite3.Database(dbPath)
-
+  const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+      console.error('Failed to connect to the database:', err,dbPath);
+    } else {
+      console.log('Connected to the database:', dbPath);
+    }
+  });
 
 // Function to find or create a client based on their IP
 function findOrCreateClient(clientIp, subscription) {

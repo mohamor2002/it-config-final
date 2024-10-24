@@ -1,12 +1,14 @@
 const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
 
 // Check if running in Docker or development environment
 const dbPath = process.env.NODE_ENV === 'docker'
-  ? '/app/db/network.db' // Path inside Docker container
+  ? '/usr/src/app/db/network.db' // Path inside Docker container
   : '../db/network.db'// Local dev path
 
-  const db = new sqlite3.Database(dbPath)
+  const db = new sqlite3.Database(dbPath).on('error', (err) => {
+    console.log(err,dbPath);
+  })
+  
 
 // Log client traffic
 function logClientTraffic(clientId, requestedBandwidth, maxBandwidth, allocatedBandwidth, timestamp) {

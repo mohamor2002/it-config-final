@@ -1,5 +1,12 @@
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./network.db'); // Centralized path for seeding
+const path = require('path');
+
+// Set the database path based on the environment
+const dbPath = process.env.NODE_ENV === 'docker' ? '/usr/src/app/db/network.db' : './network.db';
+
+console.log(`Seeding database at path: ${dbPath}`);
+
+const db = new sqlite3.Database(dbPath); // Centralized path for seeding
 
 const clients = [];
 const trafficLogs = [];

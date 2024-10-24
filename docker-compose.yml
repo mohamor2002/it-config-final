@@ -1,0 +1,90 @@
+version: '3.8'
+services:
+  db:
+    build:
+      context: ./back-app/db
+    volumes:
+      - db-data:/usr/src/app/db
+    environment:
+      - NODE_ENV=docker
+    container_name: db-service
+    entrypoint: ["sh", "/usr/src/app/startup.sh"]
+
+  isp-server:
+    build:
+      context: ./back-app/isp-server
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+    env_file:
+      - ./back-app/.env
+    environment:
+      - NODE_ENV=docker
+    ports:
+      - "4000:4000"
+    container_name: isp-server
+
+  router:
+    build:
+      context: ./back-app/router
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+    environment:
+      - NODE_ENV=docker
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "3000:3000"
+    container_name: router-service
+
+  rest-api:
+    build:
+      context: ./back-app/rest-api
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - router
+      - isp-server
+    environment:
+      - NODE_ENV=docker
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "5000:5000"
+    container_name: rest-api
+
+  client1:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8000:8000"
+    container_name: client1
+
+  frontend:
+    build:
+      context: ./front-app
+    depends_on:
+      - db
+      - rest-api
+    ports:
+      - "5173:80"
+    container_name: frontend-app
+
+volumes:
+  db-data:
