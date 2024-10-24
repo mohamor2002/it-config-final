@@ -48,25 +48,24 @@ const Bars = () => {
 
 
 
-  useEffect(() => {
-    if (clientStatus === "idle") {
-      dispatch(fetchClients()); // Fetch server data when component mounts
-    } else if (clientStatus === "succeeded") {
-      setChartData(calculateAverages(clients, selectedInterVal));
-      console.log("chartdata",chartData);
-    }
-  }, [clientStatus, dispatch, clients]);
-  useEffect(() => {
-    if (clientStatus === "succeeded") {
-      setChartData(calculateAverages(clients,selectedInterVal));
-      console.log(`chartdata ${selectedInterVal}`,chartData);
-    }
-  },[selectedInterVal]);
+ useEffect(() => {
+  if (clientStatus === "idle") {
+    dispatch(fetchClients()); // Fetch server data when component mounts
+  } 
+}, [clientStatus, dispatch]);
+
+useEffect(() => {
+  if (clientStatus === "succeeded") {
+    const updatedChartData = calculateAverages(clients, selectedInterVal);
+    setChartData(updatedChartData);
+    console.log("chartdata", updatedChartData); // Ensure correct data
+  }
+}, [clientStatus, clients, selectedInterVal]);
 
   return (
-    <div className=" basis-1/2 space-y-10 py-10  px-8 bg-itconfig-BGCard rounded-2xl shadow-md border-[2px] border-itconfig-blue-dark/8">
+    <div className=" basis-auto md:basis-1/2 space-y-4 md:space-y-10 py-4 md:py-10 px-2 md:px-8 bg-itconfig-BGCard rounded-2xl shadow-md border-[2px] border-itconfig-blue-dark/8">
       <div className=" flex flex-row justify-between items-center">
-        <h2 className=" text-xl font-roboto font-bold italic">
+        <h2 className=" text-sm md:text-xl font-roboto font-bold italic">
           Clients Bandwidth
         </h2>
         <div>
@@ -74,7 +73,7 @@ const Bars = () => {
             onValueChange={handleSelectInterval}
             defaultValue={selectedInterVal}
           >
-            <SelectTrigger className="w-[300px] h-[40px] text-lg font-roboto ">
+            <SelectTrigger className=" w-full md:w-[300px] h-auto md:h-[40px] text-base md:text-lg font-roboto ">
               <SelectValue placeholder="Select an interval" />
             </SelectTrigger>
             <SelectContent>
@@ -89,7 +88,7 @@ const Bars = () => {
           </Select>
         </div>
       </div>
-      <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <ChartContainer config={chartConfig} className=" md:min-h-[200px] w-full">
         <BarChart accessibilityLayer data={chartData}>
           <CartesianGrid vertical={false} />
           <XAxis

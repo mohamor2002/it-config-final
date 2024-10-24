@@ -6,7 +6,7 @@ import LineDraw from "./LineDraw";
 
 const Dashboard = () => {
   return (
-    <div className=" w-full rounded-t-md space-y-10  ">
+    <div className=" w-full rounded-t-md space-y-4 md:space-y-10  ">
       <TopBar page={"dashboard"} rounded={true} />
       <div className=" px-4 py-6 pl-8">
         <Header
@@ -15,11 +15,11 @@ const Dashboard = () => {
           keyword={"dashboard"}
         />
       </div>
-      <div className=" flex flex-row px-10 gap-6 items-center justify-between">
+      <div className=" flex flex-col md:flex-row px-4 md:px-10 gap-4 md:gap-6 items-center justify-between">
         <Bars />
         <Circle />
       </div>
-      <div className=" px-10">
+      <div className=" px-4 md:px-10">
         <LineDraw />
       </div>
     </div>
