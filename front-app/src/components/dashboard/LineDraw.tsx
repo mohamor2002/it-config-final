@@ -70,9 +70,9 @@ const LineDraw = () => {
     "year": "month",
    }
   return (
-    <div className=" basis-1/2 space-y-10 py-10  px-8 bg-itconfig-BGCard rounded-2xl shadow-md border-[2px] border-itconfig-blue-dark/8">
+    <div className=" basis-auto md:basis-1/2 space-y-4 md:space-y-10 py-4 md:py-10 px-4 md:px-8 bg-itconfig-BGCard rounded-2xl shadow-md border-[2px] border-itconfig-blue-dark/8">
       <div className=" flex flex-row justify-between items-center">
-        <h2 className=" text-xl font-roboto font-bold italic">
+        <h2 className=" text-sm md:text-xl font-roboto font-bold italic">
           Bandwidth distribution
         </h2>
         <div>
@@ -80,7 +80,7 @@ const LineDraw = () => {
             onValueChange={handleSelectInterval}
             defaultValue={selectedInterVal}
           >
-            <SelectTrigger className="w-[300px] h-[40px] text-lg font-roboto ">
+            <SelectTrigger className="w-full md:w-[300px] h-[30px] md:h-[40px] text-base md:text-lg font-roboto ">
               <SelectValue placeholder="Select an interval" />
             </SelectTrigger>
             <SelectContent>

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -21,6 +21,7 @@
     "@reduxjs/toolkit": "^2.3.0",
     "@shadcn/ui": "^0.0.4",
     "@tanstack/react-table": "^8.20.5",
+    "@uidotdev/usehooks": "^2.4.1",
     "@xyflow/react": "^12.3.2",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",

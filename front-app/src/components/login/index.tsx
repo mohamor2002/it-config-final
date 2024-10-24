@@ -52,15 +52,15 @@ const Login: React.FC = () => {
   return (
     <div className=" flex flex-col min-h-screen">
       <TopBar page="Login" />
-      <div className=" flex flex-col  items-center  flex-grow gap-20 py-20  ">
+      <div className=" flex flex-col  items-center  flex-grow gap-8 py-8 md:gap-20 md:py-20  ">
         <div className=" flex flex-row gap-12 justify-center items-center">
           <img src="./Logo.svg" alt="logo" />
-          <h1 className=" text-itconfig-blue-dark text-8xl font-[800] font-inter">
+          <h1 className=" text-itconfig-blue-dark  text-5xl md:text-8xl font-[800] font-inter">
             IT Config
           </h1>
         </div>
-        <div className=" w-[600px] space-y-8">
-          <form className=" min-w-3xl space-y-4">
+        <div className=" w-full px-10 md:px-0 md:w-[600px] space-y-4 md:space-y-8">
+          <form className="w-full md:min-w-3xl space-y-4">
             <TextInput
               type="email"
               label="> Enter your email address:"
@@ -79,7 +79,7 @@ const Login: React.FC = () => {
           <div className=" w-full flex flex-row justify-end">
             <button
               onClick={handleSubmit(onSubmit)}
-              className=" bg-itconfig-mauve  text-3xl font-roboto text-itconfig-blue-dark px-8 py-4 rounded-md"
+              className=" bg-itconfig-mauve   text-xl md:text-3xl font-roboto text-itconfig-blue-dark px-5 md:px-8 py-2 md:py-4 rounded-md"
               disabled={!isValid}
             >
               {isSubmitting ? "Logging in..." : "Login"}
@@ -98,33 +98,4 @@ const Login: React.FC = () => {
 
 export default Login;
 
-// const dispatch = useDispatch();
-// const [email, setEmail] = useState('');
-// const [password, setPassword] = useState('');
 
-// const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-// const isLoading = useSelector((state: RootState) => state.loading.isLoading);
-// const error = useSelector((state: RootState) => state.auth.error);
-
-// const handleLogin = () => {
-//     dispatch(loginUser({ email, password })); // Dispatch loginUser thunk
-// };
-// <input
-// type="email"
-// placeholder="Email"
-// value={email}
-// onChange={(e) => setEmail(e.target.value)}
-// />
-// <input
-// type="password"
-// placeholder="Password"
-// value={password}
-// onChange={(e) => setPassword(e.target.value)}
-// />
-// <button onClick={handleLogin} disabled={isLoading}>
-// {isLoading ? 'Logging in...' : 'Login'}
-// </button>
-
-// {error && <p style={{ color: 'red' }}>{error}</p>}
-
-// {isAuthenticated && <p>Login successful!</p>}
