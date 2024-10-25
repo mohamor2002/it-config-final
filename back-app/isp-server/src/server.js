@@ -6,7 +6,7 @@ const TrafficMonitor = require('./trafficMonitor');
 // Create the WebSocket server for the ISP
 const wss = new WebSocket.Server({ port: 8081 });
 
-const bandwidthManager = new BandwidthManager(3000); 
+const bandwidthManager = new BandwidthManager(1000); 
 const trafficMonitor = new TrafficMonitor(bandwidthManager);
 
 function fetchCurrentClients() {

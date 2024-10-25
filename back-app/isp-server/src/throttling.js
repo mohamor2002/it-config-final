@@ -5,7 +5,7 @@ class BandwidthManager {
     }
   
     registerClient(clientId, maxBandwidth) {
-      this.clients.push({ clientId, maxBandwidth, wants: 0, gets: 0 });
+      this.clients.push({ clientId, maxBandwidth, wants: 0, gets: 0 , cir: 0});
     }
 
     removeClient(clientId) {
@@ -41,6 +41,9 @@ class BandwidthManager {
 
     getClientMaxBandwidth(clientId) {
       return this.clients.find(client => client.clientId === clientId)?.maxBandwidth || 0;
+    }
+    getClientCIR(clientId) {
+      return this.clients.find(client => client.clientId === clientId)?.cir || 0;
     }
 
   }
