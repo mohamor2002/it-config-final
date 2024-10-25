@@ -7,7 +7,6 @@ DB_PATH="/usr/src/app/network.db"
 echo "Initializing the database..."
 
 # Run initialization and seeding scripts
-node initDb.js && node seed.js  # Modify these commands if needed
-
+node initDb.js 
 # Keep the container running
 tail -f /dev/null

@@ -75,6 +75,25 @@ services:
     ports:
       - "8000:8000"
     container_name: client1
+  
+  client2:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8001:8000"
+    container_name: client2
+  
 
   frontend:
     build:
@@ -85,6 +104,8 @@ services:
     ports:
       - "5173:80"
     container_name: frontend-app
+
+
 
 volumes:
   db-data:
