@@ -70,6 +70,7 @@ const TimeController = ({currentTime,setCurrentTime}) => {
           placeholder="HH:mm (e.g., 10:30)"
           name="timeSearch"
           type="text"
+          pattern="^([01]\d|2[0-3]):[0-5]\d$" // Regex pattern for HH:mm format
         />
         <button
           type="submit"
