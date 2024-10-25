@@ -23,7 +23,7 @@ import { calculateBandwidthSum } from "@/utils/charts";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const Circle = () => {
-  const [selectedInterVal, setSelectedInterval] = useState(1);
+  const [selectedInterVal, setSelectedInterval] = useState(7);
   const [chartData, setChartData] = useState([]);
   const isMobile = useIsMobile();
   const dispatch = useDispatch();

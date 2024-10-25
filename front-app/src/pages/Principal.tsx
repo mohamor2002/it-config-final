@@ -1,5 +1,6 @@
 import Clients from '@/components/clients';
 import Dashboard from '@/components/dashboard';
+import NetworkEvolution from '@/components/evolution';
 import Network from '@/components/network';
 import Setting from '@/components/setting';
 import SideBar from '@/components/shared/SideBar'
@@ -14,7 +15,7 @@ const Principal = () => {
           <Route  path="settings" element={<Setting />} />
           <Route  path="dashboard" element={<Dashboard />} />
           <Route  path="clients" element={<Clients />} />
-         
+          <Route  path="evolution" element={<NetworkEvolution />} />
         </Routes>
       </div>
     </div>
