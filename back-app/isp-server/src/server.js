@@ -6,11 +6,11 @@ const TrafficMonitor = require('./trafficMonitor');
 // Create the WebSocket server for the ISP
 const wss = new WebSocket.Server({ port: 8081 });
 
-const bandwidthManager = new BandwidthManager(3000); 
+const bandwidthManager = new BandwidthManager(1000); 
 const trafficMonitor = new TrafficMonitor(bandwidthManager);
 
 function fetchCurrentClients() {
-  const routerWs = new WebSocket('ws://localhost:8080'); // Connect to the router WebSocket server
+  const routerWs = new WebSocket('ws://router-service:8080'); // Connect to the router WebSocket server
 
   routerWs.on('open', () => {
     // Request current clients

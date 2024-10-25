@@ -5,7 +5,7 @@ const wss = new WebSocket.Server({ port: 8080 });
 const clients = new Map(); // Store connected clients
 
 wss.on('connection', (ws, req) => {
-  const clientIp = Math.random().toString(36).substring(7); 
+  const clientIp = ws._socket.remoteAddress;
 
   ws.on('message', async (message) => {
     const data = JSON.parse(message);
@@ -63,7 +63,7 @@ wss.on('connection', (ws, req) => {
 
 // Register the client with the ISP server
 function registerClientWithISP(clientId, subscription) {
-  const ws = new WebSocket('ws://localhost:8081');
+  const ws = new WebSocket('ws://isp-server:8081');
 
   ws.on('open', () => {
     ws.send(JSON.stringify({ type: 'register', clientId, maxBandwidth: subscription }));
@@ -81,7 +81,7 @@ function registerClientWithISP(clientId, subscription) {
 
 // Send traffic updates to the ISP server
 async function sendTrafficToISP(clientId, action, wants) {
-  const ws = new WebSocket('ws://localhost:8081');
+  const ws = new WebSocket('ws://isp-server:8081');
 
   ws.on('open', () => {
     ws.send(JSON.stringify({ type: 'updateWants', clientId, wants }));
@@ -93,7 +93,7 @@ async function sendTrafficToISP(clientId, action, wants) {
 }
 
 async function clientDisconnect (clientId){
-  const ws = new WebSocket('ws://localhost:8081');
+  const ws = new WebSocket('ws://isp-server:8081');
   ws.on('open', () => {
     ws.send(JSON.stringify({ type: 'clientDisconnect', clientId }));
   })

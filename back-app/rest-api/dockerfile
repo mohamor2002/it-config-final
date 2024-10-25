@@ -1,21 +1,12 @@
-# Use Node.js image
-FROM node:14
+FROM node:18
 
-# Create app directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Install app dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy app source code
-COPY ./src ./src
+COPY . .
 
-# Copy SQLite database
-COPY ../db ./db
+EXPOSE 5000
 
-# Expose port (if needed)
-EXPOSE 3002
-
-# Start the server
-CMD ["node", "src/server.js"]
+CMD ["npm", "start"]
