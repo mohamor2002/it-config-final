@@ -34,9 +34,9 @@ const Bars = ({clients}) => {
     useEffect(()=>{
       const newChartData=clients.map((client) => ({
         name: client.name,
-        "wants": client.bandwidth_logs[0].requested_bandwidth,
-        "MIR": client.bandwidth_logs[0].allocated_bandwidth,
-        "CIR": client.bandwidth_logs[0].minimum_bandwidth,
+        "wants": client.bandwidth_logs[0]?.requested_bandwidth,
+        "MIR": client.bandwidth_logs[0]?.allocated_bandwidth,
+        "CIR": client.bandwidth_logs[0]?.minimum_bandwidth,
       }))
       setChartData(newChartData)
     },[clients])

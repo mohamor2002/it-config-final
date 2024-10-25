@@ -23,9 +23,9 @@ const ClientNode = ({ data, isConnectable }) => {
         <div className="flex-col justify-center items-center space-y-2">
           <p className=" max-w-40  truncate">ip: {data.ip}</p>
           <div>
-            <p className="  text-purple-800 ">CIR: {data.bandwidth_logs[0].minimum_bandwidth}Mbps</p>
-            <p className=" text-teal-600">wants: {data.bandwidth_logs[0].requested_bandwidth}Mbps</p>
-            <p className="  text-rose-600">MIR: {data.bandwidth_logs[0].allocated_bandwidth}Mbps</p>
+            <p className="  text-purple-800 ">CIR: {data.bandwidth_logs[0]?.minimum_bandwidth}Mbps</p>
+            <p className=" text-teal-600">wants: {data.bandwidth_logs[0]?.requested_bandwidth}Mbps</p>
+            <p className="  text-rose-600">MIR: {data.bandwidth_logs[0]?.allocated_bandwidth}Mbps</p>
           </div>
         </div>
       </div>

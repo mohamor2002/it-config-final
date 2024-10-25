@@ -10,8 +10,9 @@ class TrafficMonitor {
     const gets = this.bandwidthManager.getClientBandwidth(clientId); 
     const wants = this.bandwidthManager.getClientWants(clientId);
     const maxBandwidth = this.bandwidthManager.getClientMaxBandwidth(clientId);
+    const cir = this.bandwidthManager.getClientCIR(clientId);
 
-    db.logClientTraffic(clientId, wants, maxBandwidth, gets, timestamp);
+    db.logClientTraffic(clientId, wants, maxBandwidth, gets,cir, timestamp);
   }
 
   logAllClientsTraffic(timestamp) {
