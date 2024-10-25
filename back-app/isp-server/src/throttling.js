@@ -19,16 +19,36 @@ class BandwidthManager {
       }
     }
   
-    distributeBandwidth() {
+    async distributeBandwidth(timestamp) {
       const activeClients = this.clients.length;
   
       if (activeClients === 0) return;
+      const clientWants = this.clients.map(client => client.wants);
   
-      const equalShare = this.totalBandwidth / activeClients;
-  
-      this.clients.forEach(client => {
-          client.gets = Math.min(client.maxBandwidth, equalShare);
-      });
+      try {
+
+        const response = await fetch("http://model-server:8010/predict",{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(
+          {
+            timestamp:timestamp,
+            user_requests:clientWants
+          }
+          )
+        });
+        const {cir,mir} = await response.json();
+        this.clients.forEach((client, index) => {
+          client.cir = cir[index];
+          client.gets = mir[index];
+        });
+        
+      } catch (error) {
+        console.error('Error distributing bandwidth:', error);
+        
+      }
   }
   
     getClientBandwidth(clientId) {

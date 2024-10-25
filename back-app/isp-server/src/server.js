@@ -59,11 +59,10 @@ wss.on('connection', (ws) => {
 });
 
 // Cron job to rebalance bandwidth and log traffic every 5 seconds
-cron.schedule('*/5 * * * * *', () => {
-  bandwidthManager.distributeBandwidth();
+cron.schedule('*/10 * * * * *', async () => {
   const timestamp = new Date().toISOString()
+  await bandwidthManager.distributeBandwidth(timestamp);
   trafficMonitor.logAllClientsTraffic(timestamp);
-  console.log('Rebalance complete at:', new Date(timestamp).toISOString());
 });
 
 console.log('ISP WebSocket server running on ws://localhost:8081');

@@ -19,7 +19,7 @@ function logClientTraffic(clientId, requestedBandwidth, maxBandwidth, allocatedB
       if (err) {
         console.error('Error saving client traffic:', err.message);
       } else {
-        console.log(`Logged traffic for Client ID: ${clientId}, Requested Bandwidth: ${requestedBandwidth}, Max Bandwidth: ${maxBandwidth}, Allocated Bandwidth: ${allocatedBandwidth}, Minimum Bandwidth: ${minimum_bandwidth}, Timestamp: ${timestamp}`);
+        console.log(`Logged traffic`);
       }
     }
   );
