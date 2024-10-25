@@ -105,7 +105,11 @@ const LineDraw = () => {
               right: 12,
             }}
           >
-            <CartesianGrid vertical={false} />
+            <CartesianGrid
+            horizontal={true}
+            vertical={false}
+            stroke="#aaaaaa99"
+          />
             <XAxis
               dataKey={dectionnaryLabels[selectedInterVal]}
               tickLine={false}
