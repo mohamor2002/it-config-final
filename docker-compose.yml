@@ -111,6 +111,17 @@ services:
       - "8002:8000"
     container_name: client3
   
+  model-server:
+    build:
+      context: ./back-app/model-server
+    ports:
+      - "8010:8010"
+    environment:
+      - NODE_ENV=docker
+    container_name: model-server
+    depends_on:
+      - db
+  
 
   frontend:
     build:
