@@ -2,6 +2,12 @@ const WebSocket = require('ws');
 const cron = require('node-cron');
 const BandwidthManager = require('./throttling');
 const TrafficMonitor = require('./trafficMonitor');
+const stamps = require('./stamps.js');
+
+const uniqueTimestamps = [...new Set(stamps.map(entry => entry.Date))];
+
+console.log('Unique Timestamps:', uniqueTimestamps);
+
 
 // Create the WebSocket server for the ISP
 const wss = new WebSocket.Server({ port: 8081 });
@@ -59,10 +65,12 @@ wss.on('connection', (ws) => {
 });
 
 // Cron job to rebalance bandwidth and log traffic every 5 seconds
+var i=0
 cron.schedule('*/10 * * * * *', async () => {
-  const timestamp = new Date().toISOString()
+  const timestamp = uniqueTimestamps[i]
   await bandwidthManager.distributeBandwidth(timestamp);
   trafficMonitor.logAllClientsTraffic(timestamp);
+  i=i+1
 });
 
 console.log('ISP WebSocket server running on ws://localhost:8081');

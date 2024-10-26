@@ -70,6 +70,7 @@ services:
       - rest-api
     environment:
       - NODE_ENV=docker
+      - DID=235054776
     env_file:
       - ./back-app/.env
     ports:
@@ -88,6 +89,8 @@ services:
       - rest-api
     environment:
       - NODE_ENV=docker
+      - DID=235039630
+
     env_file:
       - ./back-app/.env
     ports:
@@ -105,6 +108,7 @@ services:
       - rest-api
     environment:
       - NODE_ENV=docker
+      - DID=235010148
     env_file:
       - ./back-app/.env
     ports:
