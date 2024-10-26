@@ -51,7 +51,7 @@ const Network = ({clients}) => {
   const [edges, setEdges] = useState(initialEdges);
   useEffect(() => {
     const clientNodes = clients
-      .filter((client) => client?.bandwidth_logs.length>0) // Filter clients based on connection status
+      ?.filter((client) => client?.bandwidth_logs.length>0) // Filter clients based on connection status
       .map((client, index) => ({
         id: `client-${client.id}`,
         type: "clientNode",
@@ -59,7 +59,7 @@ const Network = ({clients}) => {
         data: { ...client, index: index + 1 }, // Include the index in the data
       }));
     const clientEdges = clients
-    .filter((client) => client?.bandwidth_logs.length>0) // Filter clients based on connection status
+    ?.filter((client) => client?.bandwidth_logs.length>0) // Filter clients based on connection status
     .map((client) => ({
         id: `e1-${client.id}`, // Unique ID for each edge
         source: "node-1", // Connect clients to server node

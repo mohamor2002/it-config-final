@@ -6,24 +6,24 @@ const calculateAverages = (clients, intervalDays) => {
     const { bandwidth_logs } = client;
 
     // Filter logs within the interval
-    const filteredLogs = bandwidth_logs.filter(
+    const filteredLogs = bandwidth_logs?.filter(
       (log) => new Date(log.timestamp) >= intervalDate
     );
 
     // Calculate averages
-    const requestedTotal = filteredLogs.reduce(
+    const requestedTotal = filteredLogs?.reduce(
       (sum, log) => sum + log.requested_bandwidth,
       0
     );
-    const allocatedTotal = filteredLogs.reduce(
+    const allocatedTotal = filteredLogs?.reduce(
       (sum, log) => sum + log.allocated_bandwidth,
       0
     );
 
-    const requestedAverage = filteredLogs.length
+    const requestedAverage = filteredLogs?.length
       ? requestedTotal / filteredLogs.length
       : 0;
-    const allocatedAverage = filteredLogs.length
+    const allocatedAverage = filteredLogs?.length
       ? allocatedTotal / filteredLogs.length
       : 0;
 

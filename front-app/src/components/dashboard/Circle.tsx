@@ -51,7 +51,7 @@ const Circle = () => {
         label: "Bandwidth",
       },
     };
-    chartData.forEach((item) => {
+    chartData?.forEach((item) => {
       config[item.id] = {
         label: item.id,
         color: item.color,
