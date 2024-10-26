@@ -24,8 +24,8 @@ const chartConfig = {
       label: "MIR",
       color:  "hsl(200.4 98% 39.4%)",
     },
-    "CIR": {
-      label: "CIR",
+    "gets": {
+      label: "gets",
       color:  "hsl(0 72.2% 50.6%)",
     },
   }
@@ -35,8 +35,8 @@ const Bars = ({clients}) => {
       const newChartData=clients.map((client) => ({
         name: 'Client '+client.id,
         "wants": client.bandwidth_logs[0]?.requested_bandwidth,
-        "MIR": client.bandwidth_logs[0]?.allocated_bandwidth,
-        "CIR": client.bandwidth_logs[0]?.minimum_bandwidth,
+        "MIR": client.bandwidth_logs[0]?.max_rate,
+        "gets": client.bandwidth_logs[0]?.allocated_bandwidth,
       }))
       setChartData(newChartData)
     },[clients])
@@ -73,7 +73,7 @@ const Bars = ({clients}) => {
                 radius={[0, 0, 0, 0]}
               />
               <Bar
-                 dataKey="CIR" fill={chartConfig["CIR"].color} 
+                 dataKey="gets" fill={chartConfig["gets"].color} 
                 stackId="a"
                 radius={[4, 4, 0, 0]}
               />
