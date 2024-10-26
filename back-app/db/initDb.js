@@ -52,6 +52,7 @@ db.serialize(() => {
       max_bandwidth INTEGER,
       allocated_bandwidth INTEGER,
       minimum_bandwidth INTEGER,
+      max_rate INTEGER,
       FOREIGN KEY (clientId) REFERENCES clients(id)
     )
   `, (err) => {

@@ -5,7 +5,7 @@ class BandwidthManager {
     }
   
     registerClient(clientId, maxBandwidth) {
-      this.clients.push({ clientId, maxBandwidth, wants: 0, gets: 0 , cir: 0});
+      this.clients.push({ clientId, maxBandwidth, wants: 0, gets: 0 , cir: 0, mir: 0});
     }
 
     removeClient(clientId) {
@@ -39,10 +39,11 @@ class BandwidthManager {
           }
           )
         });
-        const {cir,mir} = await response.json();
+        const {cir,mir,gets} = await response.json();
         this.clients.forEach((client, index) => {
           client.cir = cir[index];
-          client.gets = mir[index];
+          client.mir = mir[index];
+          client.gets = gets[index];
         });
         
       } catch (error) {
@@ -64,6 +65,9 @@ class BandwidthManager {
     }
     getClientCIR(clientId) {
       return this.clients.find(client => client.clientId === clientId)?.cir || 0;
+    }
+    getClientMIR(clientId) {
+      return this.clients.find(client => client.clientId === clientId)?.gets || 0;
     }
 
   }

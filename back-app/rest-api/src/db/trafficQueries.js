@@ -26,7 +26,7 @@ function getClientsWithLogs() {
       SELECT clients.id, clients.ip, clients.subscription, clients.connection_status, 
              client_traffic.timestamp, client_traffic.requested_bandwidth, 
              client_traffic.max_bandwidth, client_traffic.allocated_bandwidth ,
-             client_traffic.minimum_bandwidth
+             client_traffic.minimum_bandwidth, client_traffic.max_rate
       FROM clients
       LEFT JOIN client_traffic ON clients.id = client_traffic.clientId
     `;
@@ -57,7 +57,8 @@ function getClientsWithLogs() {
             requested_bandwidth: row.requested_bandwidth,
             max_bandwidth: row.max_bandwidth,
             allocated_bandwidth: row.allocated_bandwidth,
-            minimum_bandwidth: row.minimum_bandwidth
+            minimum_bandwidth: row.minimum_bandwidth,
+            max_rate: row.max_rate
           });
         }
       });
