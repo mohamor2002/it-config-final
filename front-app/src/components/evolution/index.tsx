@@ -10,7 +10,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchClients } from "@/features/client/clientSlice";
 import Bars from "./Bars";
 const NetworkEvolution = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const date = new Date();
+  date.setHours(7, 5, 0, 0); // 7:05 AM on the current day
+  const [currentTime, setCurrentTime] = useState(date);
   const dispatch = useDispatch();
   const { clients, status, error } = useSelector((state) => state.client);
   const [filtredBandwith, setFilteredBandwith] = useState([]);

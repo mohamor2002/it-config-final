@@ -62,6 +62,19 @@ useEffect(() => {
   }
 }, [clientStatus, clients, selectedInterVal]);
 
+
+useEffect(() => {
+  // Only set interval if data has loaded successfully
+  if (clientStatus === "succeeded") {
+    const intervalId = setInterval(() => {
+      dispatch(fetchClients()); // Fetch data every 5 seconds
+    }, 5000);
+
+    // Clear interval when component unmounts or when status changes
+    return () => clearInterval(intervalId);
+  }
+}, [clientStatus, dispatch]);
+
   return (
     <div className=" basis-auto md:basis-1/2 space-y-4 md:space-y-10 py-4 md:py-10 px-2 md:px-8 bg-itconfig-BGCard rounded-2xl shadow-md border-[2px] border-itconfig-blue-dark/8">
       <div className=" flex flex-row justify-between items-center">

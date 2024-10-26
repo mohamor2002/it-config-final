@@ -66,8 +66,8 @@ wss.on('connection', (ws) => {
 
 // Cron job to rebalance bandwidth and log traffic every 5 seconds
 var i=0
-cron.schedule('*/10 * * * * *', async () => {
-  const timestamp = uniqueTimestamps[i]
+cron.schedule('*/5 * * * * *', async () => {
+  const timestamp = new Date(uniqueTimestamps[i]).toISOString()
   await bandwidthManager.distributeBandwidth(timestamp);
   trafficMonitor.logAllClientsTraffic(timestamp);
   i=i+1

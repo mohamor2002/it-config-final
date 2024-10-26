@@ -51,7 +51,7 @@ ws.on('message', (data) => {
         clearInterval(interval);
         ws.close();
       }
-    }, 10000); // 10 seconds interval
+    }, 5000); // 10 seconds interval
   }
 });
 
