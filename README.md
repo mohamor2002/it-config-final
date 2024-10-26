@@ -42,5 +42,5 @@ docker-compose up --build
 
 ## Usage
 
-Once the services are up and running, you can interact with the frontend application to manage network traffic and monitor client activities.
+Once the services are up and running, you can access the dashboard application at [http://localhost:5173](http://localhost:5173) to monitor network traffic and client activities, as well as ispect RL Model performance.
 
