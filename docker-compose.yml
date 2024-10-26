@@ -90,12 +90,12 @@ services:
     environment:
       - NODE_ENV=docker
       - DID=235039630
-
     env_file:
       - ./back-app/.env
     ports:
       - "8001:8000"
     container_name: client2
+
   client3:
     build:
       context: ./back-app/client
@@ -115,6 +115,139 @@ services:
       - "8002:8000"
     container_name: client3
   
+  client4:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+      - DID=235038878
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8003:8000"
+    container_name: client4
+
+  client5:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+      - DID=235038367
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8004:8000"
+    container_name: client5
+
+  client6:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+      - DID=235041021
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8005:8000"
+    container_name: client6
+
+  client7:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+      - DID=235038589
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8006:8000"
+    container_name: client7
+
+  client8:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+      - DID=235009876
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8007:8000"
+    container_name: client8
+
+  client9:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+      - DID=235038808
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8008:8000"
+    container_name: client9
+
+  client10:
+    build:
+      context: ./back-app/client
+    volumes:
+      - db-data:/usr/src/app/db
+    depends_on:
+      - db
+      - isp-server
+      - router
+      - rest-api
+    environment:
+      - NODE_ENV=docker
+      - DID=235010468
+    env_file:
+      - ./back-app/.env
+    ports:
+      - "8009:8000"
+    container_name: client10
+  
   model-server:
     build:
       context: ./back-app/model-server
@@ -126,7 +259,6 @@ services:
     depends_on:
       - db
   
-
   frontend:
     build:
       context: ./front-app
@@ -136,8 +268,6 @@ services:
     ports:
       - "5173:80"
     container_name: frontend-app
-
-
 
 volumes:
   db-data:

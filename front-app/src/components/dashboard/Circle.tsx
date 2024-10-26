@@ -38,16 +38,27 @@ const Circle = () => {
     }
     // Once data is fetched, calculate chart data
     if (clientStatus === "succeeded" && clients.length > 0) {
-      const newChartData = [...calculateBandwidthSum(clients, selectedInterVal)].slice(0, 7);
+      const newChartData = [...calculateBandwidthSum(clients, selectedInterVal)];
       setChartData(newChartData);
       console.log(`Updated chart data for interval ${selectedInterVal}:`, newChartData);
     }
   }, [clientStatus, dispatch, clients, selectedInterVal]);
 
+  useEffect(() => {
+    // Only set interval if data has loaded successfully
+    if (clientStatus === "succeeded") {
+      const intervalId = setInterval(() => {
+        dispatch(fetchClients()); // Fetch data every 5 seconds
+      }, 5000);
+  
+      // Clear interval when component unmounts or when status changes
+      return () => clearInterval(intervalId);
+    }
+  }, [clientStatus, dispatch]);
   // Chart configuration based on the fetched chartData
   const chartConfig = React.useMemo(() => {
     const config: ChartConfig = {
-      gets: {
+      wants: {
         label: "Bandwidth",
       },
     };
@@ -61,7 +72,7 @@ const Circle = () => {
   }, [chartData]);
 
   const totalBandwidth = React.useMemo(() => {
-    return chartData.reduce((total, item) => total + item.gets, 0);
+    return chartData.reduce((total, item) => total + item?.wants, 0);
   }, [chartData]);
 
   // Handling interval selection
@@ -105,7 +116,7 @@ const Circle = () => {
             />
             <Pie
               data={chartData}
-              dataKey="gets"
+              dataKey="wants"
               nameKey="index"
               innerRadius={isMobile ? 50 : 80}
               outerRadius={isMobile ? 70 : 150}

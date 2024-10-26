@@ -57,41 +57,47 @@ const NetworkFlow = () => {
   // Fetch client data from the server
   useEffect(() => {
     const fetchClients = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/traffic/clients"); // Replace with your actual URL
-        const clientData = response.data;
+        try {
+            const response = await axios.get("http://localhost:5000/api/traffic/clients"); // Replace with your actual URL
+            const clientData = response.data;
 
-        // Create client nodes based on the fetched data
-        const clientNodes = clientData
-        .filter(client => client.connection_status === "connected") // Filter clients based on connection status
-        .map((client, index) => ({
-          id: `client-${client.id}`,
-          type: "clientNode",
-          position: { x: 0 + index * 300, y: 300 + (index % 6) * 4 }, // Dynamically position nodes
-          data: { ...client, index: index + 1 }, // Include the index in the data
-        }));
+            // Create client nodes based on the fetched data
+            const clientNodes = clientData
+                .filter(client => client.connection_status === "connected") // Filter clients based on connection status
+                .map((client, index) => ({
+                    id: `client-${client.id}`,
+                    type: "clientNode",
+                    position: { x: 0 + index * 300, y: 300 + (index % 6) * 4 }, // Dynamically position nodes
+                    data: { ...client, index: index + 1 }, // Include the index in the data
+                }));
 
-      // Create edges that connect each connected client to the server
-      const clientEdges = clientData
-        .filter(client => client.connection_status === "connected") // Filter clients based on connection status
-        .map((client) => ({
-          id: `e1-${client.id}`, // Unique ID for each edge
-          source: "node-1", // Connect clients to server node
-          target: `client-${client.id}`, // Client node ID
-          animated: true,
-          style: { stroke: "#db2777", strokeWidth: 4 }, // Customize edge style
-        }));
-        // Update state with the fetched nodes and edges
-        setNodes((nds) => [...initialServerNode, ...clientNodes]);
-        setEdges([...initialEdges,...clientEdges]);
-        setClients(clientData);
-      } catch (error) {
-        console.error("Error fetching clients:", error);
-      }
+            // Create edges that connect each connected client to the server
+            const clientEdges = clientData
+                .filter(client => client.connection_status === "connected") // Filter clients based on connection status
+                .map((client) => ({
+                    id: `e1-${client.id}`, // Unique ID for each edge
+                    source: "node-1", // Connect clients to server node
+                    target: `client-${client.id}`, // Client node ID
+                    animated: true,
+                    style: { stroke: "#db2777", strokeWidth: 4 }, // Customize edge style
+                }));
+            
+            // Update state with the fetched nodes and edges
+            setNodes((nds) => [...initialServerNode, ...clientNodes]);
+            setEdges([...initialEdges, ...clientEdges]);
+            setClients(clientData);
+        } catch (error) {
+            console.error("Error fetching clients:", error);
+        }
     };
+      fetchClients()
+    // Set an interval to fetch clients every 5 seconds
+    const intervalId = setInterval(fetchClients, 5000);
 
-    fetchClients();
-  }, []); // Empty dependency array ensures this runs once on component mount
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+}, []);
+ // Empty dependency array ensures this runs once on component mount
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),

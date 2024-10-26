@@ -50,9 +50,9 @@ function calculateBandwidthSum(clients, n) {
   clients.forEach((client,index) => {
       const totalBandwidth = client.bandwidth_logs
           .filter(log => new Date(log.timestamp) >= nDaysAgo) // Filter logs for the last n days
-          .reduce((sum, log) => sum + log.allocated_bandwidth, 0); // Sum allocated bandwidth
+          .reduce((sum, log) => sum + log.requested_bandwidth, 0); // Sum allocated bandwidth
       
-      result.push({"index":"client "+index+1,"name": client.name,"gets":totalBandwidth,"color":generateRandomColor() });
+      result.push({"index":"client "+index+1,"name": client.name,"wants":totalBandwidth,"color":generateRandomColor() });
   });
   return result;
 }

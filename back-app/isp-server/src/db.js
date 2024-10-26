@@ -11,10 +11,10 @@ const dbPath = process.env.NODE_ENV === 'docker'
   
 
 // Log client traffic
-function logClientTraffic(clientId, requestedBandwidth, maxBandwidth, allocatedBandwidth,minimum_bandwidth, timestamp) {
+function logClientTraffic(clientId, requestedBandwidth, maxBandwidth, allocatedBandwidth,minimum_bandwidth,max_rate, timestamp) {
   db.run(
-    `INSERT INTO client_traffic (clientId, timestamp, requested_bandwidth, max_bandwidth, allocated_bandwidth, minimum_bandwidth) VALUES (?, ?, ?, ?, ?, ?)`,
-    [clientId, timestamp, requestedBandwidth, maxBandwidth, allocatedBandwidth, minimum_bandwidth],
+    `INSERT INTO client_traffic (clientId, timestamp, requested_bandwidth, max_bandwidth, allocated_bandwidth, minimum_bandwidth, max_rate) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [clientId, timestamp, requestedBandwidth, maxBandwidth, allocatedBandwidth, minimum_bandwidth, max_rate],
     function(err) {
       if (err) {
         console.error('Error saving client traffic:', err.message);

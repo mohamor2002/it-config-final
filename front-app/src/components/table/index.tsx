@@ -15,9 +15,14 @@ export default function DemoPage() {
         console.error("Error fetching client data:", error);
       }
     };
+     
+    fetchData(); // Fetch data on component mount
+    // Set an interval to fetch clients every 5 seconds
+    const intervalId = setInterval(fetchData, 5000);
 
-    fetchData(); // Call the fetch function
-  }, []); // Empty dependency array to run once on mount
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId); 
+   }, []); // Empty dependency array to run once on mount
 
   return (
     <div className="">

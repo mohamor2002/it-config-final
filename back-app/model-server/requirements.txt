@@ -2,6 +2,9 @@ fastapi
 uvicorn
 pydantic
 pandas
-torch==2.0.1
-stable-baselines3
 numpy==1.26.4
+gym
+stable-baselines3
+shimmy  # Add shimmy for Gym 
+gymnasium  # Gymnasium for compatibility
+

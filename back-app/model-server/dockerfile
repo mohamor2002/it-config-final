@@ -8,9 +8,10 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies with CPU-only torch, without caching
-RUN pip install fastapi uvicorn pydantic pandas numpy==1.26.4 \
-    && pip install torch==2.0.1+cpu -f https://download.pytorch.org/whl/torch_stable.html \
-    && pip install stable-baselines3
+RUN pip install --no-cache-dir fastapi uvicorn pydantic pandas numpy==1.26.4 gym shimmy gymnasium
+RUN pip install --no-cache-dir torch==2.0.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install --no-cache-dir stable-baselines3
+    
 # Copy the rest of the application code
 COPY src ./src
 

@@ -62,6 +62,18 @@ const LineDraw = () => {
       console.log(`chartdata ${selectedInterVal}`,chartData);
     }
   },[selectedInterVal]);
+
+  useEffect(() => {
+    // Only set interval if data has loaded successfully
+    if (clientStatus === "succeeded") {
+      const intervalId = setInterval(() => {
+        dispatch(fetchClients()); // Fetch data every 5 seconds
+      }, 5000);
+      
+      // Clear interval when component unmounts or when status changes
+      return () => clearInterval(intervalId);
+    }
+  }, [clientStatus, dispatch]);
  
    const dectionnaryLabels={
     "day": "hour",
