@@ -30,6 +30,14 @@ This project is a comprehensive network traffic management system that simulates
 - Docker
 - Docker Compose
 
+## Setup
+
+Before running the project, create a `.env` file inside the `back-app/` directory with the following content:
+
+```env
+NODE_ENV=docker
+```
+
 ## Running the Project
 
 To run the entire project, navigate to the root directory of the project and execute the following command:
