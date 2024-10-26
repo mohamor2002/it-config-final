@@ -19,25 +19,33 @@ class BandwidthEnv(gym.Env):
 
         self.num_clients = num_clients
         self.total_bandwidth = total_bandwidth
+        self.time_steps = time_steps
+
         self.bw_requests_data = bw_requests_data
         self.total_bw_requests = pd.pivot_table(data=bw_requests_data, columns='DID', index='Date', values='BW_REQUESTED')
         self.total_bw_requests = self.total_bw_requests.reindex(columns=list(bw_requests_data['DID'].unique()))
 
-        self.time_steps = time_steps  # 24 hours with 5-minute intervals
         self.current_time_step = 0
         self.bw_requests = np.array(self.total_bw_requests.iloc[self.current_time_step])
         self.hour = self.bw_requests_data.iloc[self.current_time_step]['Hour']
+        self.hour_sin = np.sin(np.pi * 2 * (self.hour+1) / 24)
+        self.hour_cos = np.cos(np.pi * 2 * (self.hour+1) / 24)
+        if self.hour > 22 or self.hour < 6:
+          self.daytime = 0
+        else:
+          self.daytime = 1
+
         self.cirs = np.minimum(self.bw_requests, 1000)
-        self.mirs = self.cirs
-        self.abuse_counter = np.zeros_like(self.cirs)
+        self.mirs = np.ones_like(self.bw_requests) * 1000
+        self.allocated_prev = np.zeros_like(self.bw_requests)
+        self.abuse_counter = np.zeros_like(self.bw_requests)
 
         # Define action space: allocate bandwidth to each client (normalized to total bandwidth)
         self.action_space = spaces.Box(low=-self.total_bandwidth, high=self.total_bandwidth, shape=(self.num_clients,), dtype=np.float32)
 
         # Define observation space: state includes current bandwidth usage, requests, and available bandwidth
-        self.observation_space = spaces.Box(low=0, high=np.inf, shape=(self.num_clients * 3 + 2,), dtype=np.float32)  # [MIRs, CIRs, Requests, time_step]
+        self.observation_space = spaces.Box(low=-1, high=np.inf, shape=(self.num_clients* 7,), dtype=np.float32) 
 
-        self.timestamp_log = []
         self.reset()
 
     def reset(self):
@@ -45,81 +53,107 @@ class BandwidthEnv(gym.Env):
         self.current_time_step = 0
         self.bw_requests = np.array(self.total_bw_requests.iloc[self.current_time_step])
         self.hour = self.bw_requests_data.iloc[self.current_time_step]['Hour']
+        self.hour_sin = np.sin(np.pi * 2 * (self.hour+1) / 24)
+        self.hour_cos = np.cos(np.pi * 2 * (self.hour+1) / 24)
+        if self.hour > 20 or self.hour < 6:
+          self.daytime = 0
+        else:
+          self.daytime = 1
         self.cirs = np.minimum(self.bw_requests, 1000)
-        self.mirs = self.cirs
+        self.mirs = np.ones_like(self.bw_requests) * 1000
+        self.allocated_prev = np.zeros_like(self.bw_requests)
+        self.abuse_counter = np.zeros_like(self.cirs)
 
         return self._get_observation()
 
     def _get_observation(self):
         # Return the flattened state)
-        return np.concatenate((
-                self.mirs,
-                self.cirs,
-                self.bw_requests,
-                [self.hour, self.total_bandwidth]  # Add total bandwidth as the last element
-                ))
+        return np.concatenate((self.mirs, self.bw_requests, self.allocated_prev, np.maximum(self.abuse_counter-2, 0), 
+                                np.ones_like(self.mirs)*self.hour_sin, np.ones_like(self.mirs)*self.hour_cos, 
+                                np.ones_like(self.mirs)*self.daytime))
+
     def step(self, action):
 
-        self.cirs = np.minimum(self.bw_requests, 1000)
-        self.cirs = np.maximum(self.cirs, 10) # minimum 10 Kps for each client
-        remaining_bandwidth = self.total_bandwidth - np.sum(self.cirs)
+        cirs = np.minimum(self.bw_requests, 1000)
+        #Handling Edge case (bw_requested = 0)
+        cirs = np.maximum(cirs, 10) # minimum 10 Kps for each client
+
+        remaining_bandwidth = self.total_bandwidth - np.sum(cirs)
+
 
         # Adjust MIRs based on the action
-        new_mirs = self.mirs + action
+        #new_mirs = self.mirs + action
 
         # Ensure MIRs stay within allowable limits
-        new_mirs = np.maximum(new_mirs, self.cirs)
+        #self.mirs = new_mirs
+
+        
+
+        adjusted_action = np.clip(action, -remaining_bandwidth/30, remaining_bandwidth/30)
+        new_mirs = np.clip(self.mirs + adjusted_action, self.cirs, self.total_bandwidth - np.sum(self.cirs))
         self.mirs = new_mirs
 
-        self.timestamp_log.append({
-            'timestamp': self.current_time_step,
-            'cirs': self.cirs,
-            'remaining_bandwidth': remaining_bandwidth,
-            'requests': self.bw_requests,
-            'action': action,
-            'mirs': self.mirs,
-        })
+        if np.sum(self.mirs) > self.total_bandwidth:
+          self.mirs = self.mirs * (self.total_bandwidth / np.sum(self.mirs))
+        
+
+        Allocations = cirs + np.minimum(self.mirs, self.bw_requests)
+
+        #Reward Parameters
+        beta = 8
+        theta = 0.2
+        min_duration = 3
+        lmbda = 0.5
+
+        #Calculate Reward
+        Reward = self.getReward(Allocations, beta, theta, min_duration, lmbda)
+
+        #MIR Rewards
+        #Rmir = self.mirs.mean() / self.num_clients
+        alpha = 0.1
+        Rusage = - (alpha * remaining_bandwidth) / self.total_bandwidth
+
+        Reward +=  Rusage
 
 
-        #Over-Allocation Penalty
-        # Define the thresholds and coefficients
-        beta1 = 6
-        beta2 = 12
-
-        # Filter mirs based on cir values
-        mirs_below_threshold = [mir for mir, cir in zip(self.mirs, self.cirs) if cir <= 1000]
-        mirs_above_threshold = [mir for mir, cir in zip(self.mirs, self.cirs) if cir > 1000]
-
-        # Calculate the sum of mirs for each condition
-        sum_mirs_below = sum(mirs_below_threshold)
-        sum_mirs_above = sum(mirs_above_threshold)
-
-        # Calculate Pover1 and Pover2 based on the conditions
-        Pover1 = beta1 * (max(0, sum_mirs_below - self.total_bandwidth) / self.total_bandwidth)
-        Pover2 = beta2 * (max(0, sum_mirs_above - self.total_bandwidth) / self.total_bandwidth)
-
-        # Calculate reward
-        lrfactor = 2
-        ratios = self.mirs / self.bw_requests
-        rs = np.minimum(ratios, 1)
-        Reff = sum(rs) / self.num_clients
-        low_ratio_penalty = np.sum(ratios < 0.5) * lrfactor
-
-
-        Reward = Reff - Pover1 - Pover2 - self.getPabusive() - low_ratio_penalty
-
+        #Move to the next state
         self.current_time_step += 1
 
-
-        self.bw_requests = np.array(self.total_bw_requests.iloc[self.current_time_step])
+        self.allocated_prev = Allocations
+        self.bw_requests = np.array(self.total_bw_requests.iloc[0])
         self.hour = self.bw_requests_data.iloc[self.current_time_step]['Hour']
-        self.cirs = np.minimum(self.bw_requests, 1000)
+        self.hour_sin = np.sin(np.pi * 2 * (self.hour+1) / 24)
+        self.hour_cos = np.cos(np.pi * 2 * (self.hour+1) / 24)
+        if self.hour > 20 or self.hour < 6:
+          self.daytime = 0
+        else:
+          self.daytime = 1
+        #self.cirs = np.minimum(self.bw_requests, 1000)
+        #self.remaining_bandwidth = self.totabl_bandwidth - np.sum(self.cirs)
+
 
         done = self.current_time_step >= self.time_steps-1
+
         return self._get_observation(), Reward, done, {}
 
-    def getPabusive(self, theta=0.2, min_duration=3, lmbda=0.25):
-        condition = self.bw_requests > self.mirs * (1+theta)
+    def getReward(self, Allocations, beta=3, theta=0.2, min_duration=3, lmbda=0.5):
+        #Over-Allocation Penalty
+        Pover = self.getPover(Allocations, beta)
+
+        #Abusive Usage Penalty
+        Pabusive = self.getPabusive(theta, min_duration, lmbda)
+
+        # Calculate reward
+        Reff = np.sum(Allocations / np.maximum(self.bw_requests, 10)) / self.num_clients
+
+        return Reff - Pover - Pabusive
+
+    def getPover(self, Allocations, beta=3):
+      return beta * (max(0, np.sum(Allocations) - self.total_bandwidth) / self.total_bandwidth)
+
+
+    def getPabusive(self, theta=0.2, min_duration=3, lmbda=0.5):
+        condition = self.bw_requests > (self.mirs * (1+theta))
         self.abuse_counter = np.where(condition, self.abuse_counter + 1, 0)
 
         D = np.maximum(self.abuse_counter - min_duration+1, 0)
@@ -138,7 +172,6 @@ class BandwidthEnv(gym.Env):
             print(f"Total Bandwidth: {self.total_bandwidth}")
             print(f"Remaining Bandwidth: {self.total_bandwidth - np.sum(self.cirs)}")
             print(f"Requested Bandwidth: {self.requests.iloc[self.current_time_step]}")
-
 
 app = FastAPI()
 
@@ -168,12 +201,9 @@ def format_data(timestamp: datetime, user_requests: List[float]):
     print("DataFrame after formatting:")
     print(df)
 
-    # Pivot to match `BandwidthEnv` requirements
-    pivot_df = df.pivot(index='Date', columns='DID', values='BW_REQUESTED').fillna(0)
-    print("Pivoted DataFrame:")
-    print(pivot_df)
+ 
 
-    return pivot_df
+    return df
 
 
 
@@ -194,4 +224,6 @@ async def predict_bandwidth(request: UserBandwidthRequest):
     # Assuming model returns two lists for MIR and CIR
     
     # Return response
-    return ModelResponse(mir=[], cir=[],gets=[])
+    mir = obs[0][:10]
+    array = np.array(request.user_requests)
+    return ModelResponse(mir=mir, cir=np.minimum(array, 1000),gets=np.minimum(array, mir))
